@@ -29,7 +29,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: 📦 Install ncc
-        run: npm install --save-dev ncc
+        run: npm install --save-dev @vercel/ncc
 
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
