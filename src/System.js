@@ -1,33 +1,51 @@
-const { exec } = require('child_process');
+const childProcess  = require('child_process');
 
-function execAsync(command, verbose = true) {
+function testCommand(command) {
+  if (!command || typeof command !== 'string') {
+    throw new Error('Invalid command provided');
+  }
+}
+
+function combineOptions(options) {
+  return {
+    stdio: 'inherit', // Default to inherit for stdout/stderr
+    shell: true,      // Allow full shell syntax like redirection, etc.
+    ...options        // Spread any additional options
+  };
+}
+
+function execSync(command, options = {}) {
+  testCommand(command);
+  try {
+    return childProcess.execSync(command, combineOptions(options));
+  } catch (error) {
+    console.error(`Error executing command: ${command}`, error);
+    throw error;
+  }
+}
+
+function execAsync(command, options = {}) {
+  testCommand(command);
+
+  // Split the command into executable and args for spawn
+  const [cmd, ...args] = command.split(' ');
+
   return new Promise((resolve, reject) => {
-    if (!command || typeof command !== 'string') {
-      console.error('Invalid command:', command);
-      return reject(new Error('Invalid command'));
-    }
+    const child = childProcess.spawn(cmd, args, combineOptions(options));
 
-    if (verbose) console.log(`Executing command: ${command}`);
-
-    exec(command, (error, stdout, stderr) => {
-      if (verbose) {
-        if (stdout) process.stdout.write(stdout);
-        if (stderr) process.stderr.write(stderr);
-      }
-
-      if (error) {
-        if (verbose) {
-          console.error(`Error executing command "${command}":`, error.message);
-        }
-        reject(error);
+    child.on('close', (code) => {
+      if (code === 0) {
+        resolve();
       } else {
-        if (verbose) console.log(`Command executed successfully: ${command}`);
-        resolve({ stdout, stderr });
+        reject(new Error(`Command failed with exit code ${code}`));
       }
+    });
+
+    child.on('error', (err) => {
+      console.error(`Failed to start command: ${command}`, err);
+      reject(err);
     });
   });
 }
 
-module.exports = {
-  exec: execAsync,
-};
+module.exports = { execSync, execAsync };
