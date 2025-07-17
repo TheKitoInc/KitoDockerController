@@ -78,10 +78,13 @@ async function buildThread() {
       continue;
     }
 
-    const success = await dockerCommands.buildImage(buildPath);
-    if (success) {
-      handleNewImageBuild(buildPath);
-    }
+    // Do one build at a time
+    await dockerCommands.buildImage(buildPath).then(success => {
+      console.log(`Build completed for ${buildPath}:`, success);
+      if (success) {
+        //handleNewImageBuild(buildPath);
+      }
+    });
   }
 }
 
