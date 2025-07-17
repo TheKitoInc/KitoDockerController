@@ -8,7 +8,7 @@ const watcher = require(__dirname + '/watcher.js');
 const debounce = require(__dirname + '/debounce.js');
 
 const buildQueue = new UniqueQueue();
-const buildImage = require(__dirname + '/BuildImage.js');
+const dockerCommands = require(__dirname + '/DockerCommands.js');
 const Containers = require(__dirname + '/Containers.js');
 const Utils = require(__dirname + '/Utils.js');
 
@@ -78,7 +78,7 @@ async function buildThread() {
       continue;
     }
 
-    const success = await buildImage(buildPath);
+    const success = await dockerCommands.buildImage(buildPath);
     if (success) {
       handleNewImageBuild(buildPath);
     }
