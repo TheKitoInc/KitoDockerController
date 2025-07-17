@@ -1,16 +1,16 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
-const UniqueQueue = require(__dirname + "/UniqueQueue.js");
-console.log("Queue module loaded.", UniqueQueue);
+const UniqueQueue = require(__dirname + '/UniqueQueue.js');
+console.log('Queue module loaded.', UniqueQueue);
 
-const watcher = require(__dirname + "/watcher.js");
-const debounce = require(__dirname + "/debounce.js");
+const watcher = require(__dirname + '/watcher.js');
+const debounce = require(__dirname + '/debounce.js');
 
 const buildQueue = new UniqueQueue();
-const buildImage = require(__dirname + "/BuildImage.js");
-const Containers = require(__dirname + "/Containers.js");
-const Utils = require(__dirname + "/Utils.js");
+const buildImage = require(__dirname + '/BuildImage.js');
+const Containers = require(__dirname + '/Containers.js');
+const Utils = require(__dirname + '/Utils.js');
 
 let running = true;
 
@@ -24,15 +24,22 @@ module.exports = function (dockerPath) {
   }
 
   console.log(`Watching Docker path: ${dockerPath}`);
-  const watcherInstance = watcher.createWatcher(dockerPath, (event, filePath) => {
-    const pathRelative = path.relative(dockerPath, filePath);
-    const pathName = pathRelative.split(path.sep)[0];
-    const buildPath = path.join(dockerPath, pathName);
-    debounce.debounce(buildPath, () => handleDirectoryChange(buildPath), 1000);
-  });
+  const watcherInstance = watcher.createWatcher(
+    dockerPath,
+    (event, filePath) => {
+      const pathRelative = path.relative(dockerPath, filePath);
+      const pathName = pathRelative.split(path.sep)[0];
+      const buildPath = path.join(dockerPath, pathName);
+      debounce.debounce(
+        buildPath,
+        () => handleDirectoryChange(buildPath),
+        1000
+      );
+    }
+  );
 
-  process.on("SIGINT", () => {
-    console.log("Shutting down...");
+  process.on('SIGINT', () => {
+    console.log('Shutting down...');
     watcherInstance.close();
     running = false;
     process.exit(0);
@@ -52,7 +59,7 @@ function handleDirectoryChange(buildPath) {
     return;
   }
 
-  const buildFile = path.join(buildPath, "Dockerfile");
+  const buildFile = path.join(buildPath, 'Dockerfile');
   if (!fs.existsSync(buildFile)) {
     return;
   }
@@ -67,7 +74,7 @@ async function buildThread() {
     const buildPath = buildQueue.dequeue();
 
     if (buildPath === null) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       continue;
     }
 
@@ -79,5 +86,5 @@ async function buildThread() {
 }
 
 function handleNewImageBuild(buildPath) {
- Containers.restart(Utils.getImageNameFromPath(buildPath));
+  Containers.restart(Utils.getImageNameFromPath(buildPath));
 }

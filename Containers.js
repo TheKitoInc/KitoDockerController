@@ -1,6 +1,6 @@
 const list = new Set();
-const prefix = "supervised-container-";
-const Supervisor = require(__dirname + "/Supervisor.js");
+const prefix = 'supervised-container-';
+const Supervisor = require(__dirname + '/Supervisor.js');
 
 function mapSupervisorName(name) {
   return `${prefix}${name}`;
@@ -26,13 +26,13 @@ function remove(imageName) {
 
 function refreshSupervisor() {
   const slist = new Map();
-  list.forEach((name) => {
+  list.forEach(name => {
     const mappedName = mapSupervisorName(name);
     const command = `docker run --rm -it --name ${mappedName} ${name}`;
     slist.set(name, command);
   });
 
-  Supervisor.updateSupervisorConfig("dockerRunner", slist);
+  Supervisor.updateSupervisorConfig('dockerRunner', slist);
 }
 
 function restart(imageName) {

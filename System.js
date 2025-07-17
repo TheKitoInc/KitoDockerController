@@ -1,10 +1,10 @@
-const { exec } = require("child_process");
+const { exec } = require('child_process');
 
 function execAsync(command, verbose = true) {
   return new Promise((resolve, reject) => {
-    if (!command || typeof command !== "string") {
-      console.error("Invalid command:", command);
-      return reject(new Error("Invalid command"));
+    if (!command || typeof command !== 'string') {
+      console.error('Invalid command:', command);
+      return reject(new Error('Invalid command'));
     }
 
     if (verbose) console.log(`Executing command: ${command}`);

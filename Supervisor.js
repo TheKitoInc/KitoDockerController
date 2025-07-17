@@ -1,19 +1,19 @@
-const fs = require("fs");
-const { execSync } = require("child_process");
+const fs = require('fs');
+const { execSync } = require('child_process');
 
 if (process.getuid && process.getuid() !== 0) {
-  console.error("This script must be run as root.");
+  console.error('This script must be run as root.');
   process.exit(1);
 }
 
 // Helper to reload Supervisor config
 function reloadSupervisor() {
   try {
-    console.log("Reloading Supervisor...");
-    execSync("supervisorctl reread", { stdio: "inherit" });
-    execSync("supervisorctl update", { stdio: "inherit" });
+    console.log('Reloading Supervisor...');
+    execSync('supervisorctl reread', { stdio: 'inherit' });
+    execSync('supervisorctl update', { stdio: 'inherit' });
   } catch (err) {
-    console.error("Failed to reload Supervisor:", err.message);
+    console.error('Failed to reload Supervisor:', err.message);
   }
 }
 
@@ -32,10 +32,10 @@ function generateSupervisorFile(commands = new Map()) {
     lines.push(`stderr_logfile_backups=5`);
     lines.push(`stdout_logfile_maxbytes=1MB`);
     lines.push(`stdout_logfile_backups=5`);
-    lines.push(""); // Blank line between programs
+    lines.push(''); // Blank line between programs
   });
 
-  return lines.join("\n");
+  return lines.join('\n');
 }
 
 // Update Supervisor config file
@@ -44,9 +44,9 @@ function updateSupervisorConfig(configName, commands = new Map()) {
   const content = generateSupervisorFile(commands);
 
   if (fs.existsSync(configPath)) {
-    const current = fs.readFileSync(configPath, "utf8");
+    const current = fs.readFileSync(configPath, 'utf8');
     if (current === content) {
-      console.log("No changes to Supervisor config, skipping write.");
+      console.log('No changes to Supervisor config, skipping write.');
       return;
     }
   }
@@ -60,9 +60,12 @@ function updateSupervisorConfig(configName, commands = new Map()) {
 function restartSupervisorTask(taskName) {
   try {
     console.log(`Restarting Supervisor task: ${taskName}`);
-    execSync(`supervisorctl restart ${taskName}`, { stdio: "inherit" });
+    execSync(`supervisorctl restart ${taskName}`, { stdio: 'inherit' });
   } catch (err) {
-    console.error(`Failed to restart Supervisor task ${taskName}:`, err.message);
+    console.error(
+      `Failed to restart Supervisor task ${taskName}:`,
+      err.message
+    );
   }
 }
 

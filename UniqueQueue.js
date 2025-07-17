@@ -1,5 +1,5 @@
-class UniqueQueue  {
-  constructor(name = Symbol("Queue")) {
+class UniqueQueue {
+  constructor(name = Symbol('Queue')) {
     this.name = name;
     this.list = new Set();
   }
@@ -46,10 +46,10 @@ class UniqueQueue  {
   toArray() {
     return Array.from(this.list);
   }
-  
+
   toString() {
-    return `UniqueQueue(${this.name.toString()}): ${Array.from(this.list).join(", ")}`;
-  }  
+    return `UniqueQueue(${this.name.toString()}): ${Array.from(this.list).join(', ')}`;
+  }
 }
 
 module.exports = UniqueQueue;

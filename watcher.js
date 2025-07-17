@@ -1,4 +1,4 @@
-const chokidar = require("chokidar");
+const chokidar = require('chokidar');
 module.exports.createWatcher = function (buildPath, callback) {
   console.log(`Creating watcher for: ${buildPath}`);
 
@@ -7,7 +7,7 @@ module.exports.createWatcher = function (buildPath, callback) {
     persistent: true,
   });
 
-  watcher.on("all", (event, filePath) => {
+  watcher.on('all', (event, filePath) => {
     callback(event, filePath);
   });
 
