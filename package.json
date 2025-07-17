@@ -11,7 +11,8 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "chokidar": "^4.0.3"
+    "chokidar": "^4.0.3",
+    "dockerode": "^4.0.7"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.38.3",
