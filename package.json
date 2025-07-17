@@ -14,6 +14,7 @@
     "chokidar": "^4.0.3"
   },
   "devDependencies": {
+    "eslint": "^9.31.0",
     "prettier": "^3.6.2"
   }
 }
