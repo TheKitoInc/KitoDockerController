@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
 
@@ -78,25 +80,34 @@ async function buildThread() {
     }
 
     // Do one build at a time
-    console.log(`Processing build for: ${buildPath}`);
-    await dockerCommands.buildImage(buildPath).then(success => {
-      console.log(`Build completed for ${buildPath}:`, success);
-      if (success) {
-        //handleNewImageBuild(buildPath);
-      }
-    });
+    await handleBuildImage(buildPath);
   }
 }
 
-function handleNewImageBuild(buildPath) {
-  dockerCommands
-    .stopContainer(Utils.getImageNameFromPath(buildPath))
-    .then(() => {
-      console.log(
-        `Container stopped for image: ${Utils.getImageNameFromPath(buildPath)}`
-      );
-      return dockerCommands.startContainer(
-        Utils.getImageNameFromPath(buildPath)
-      );
+async function handleBuildImage(buildPath) {
+  if (!Utils.isValidDockerPath(buildPath)) {
+    console.warn(`Invalid Docker path: ${buildPath}`);
+    return;
+  }
+
+  try {
+    console.log(`Processing build for: ${buildPath}`);
+    await dockerCommands.buildImage(buildPath).then(success => {
+      console.log(`Build completed for ${buildPath}:`);
+      handleNewImageBuild(buildPath);
     });
+    console.log(`Build image command executed for: ${buildPath}`);
+  } catch (error) {
+    console.error(`Error processing build for ${buildPath}:`, error);
+  }
+}
+
+async function handleNewImageBuild(buildPath) {
+  const imageName = Utils.getImageNameFromPath(buildPath);
+  if (!imageName) {
+    console.error(`Could not determine image name from path: ${buildPath}`);
+    return;
+  }
+  await dockerCommands.stopContainer(imageName);
+  return dockerCommands.startContainer(imageName);
 }
