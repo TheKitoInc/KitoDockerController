@@ -1,5 +1,5 @@
 const { exec } = require(__dirname + '/System.js');
-const { getImageNameFromPath } = require(__dirname + '/utils.js');
+const { getImageNameFromPath } = require(__dirname + '/Utils.js');
 
 module.exports = async function (buildPath) {
   const imageName = getImageNameFromPath(buildPath);
