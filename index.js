@@ -6,6 +6,6 @@ if (process.argv.length != 3) {
 }
 
 const dockerPath = process.argv[2];
-const main = require(__dirname + '/main.js');
+const main = require(__dirname + '/src/main.js');
 
 main(dockerPath);
