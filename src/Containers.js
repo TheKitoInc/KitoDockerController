@@ -28,7 +28,7 @@ function refreshSupervisor() {
   const slist = new Map();
   list.forEach(name => {
     const mappedName = mapSupervisorName(name);
-    const command = `docker run --rm -it --name ${mappedName} ${name}`;
+    const command = `docker run --rm --name ${mappedName} ${name}`;
     slist.set(name, command);
   });
 
