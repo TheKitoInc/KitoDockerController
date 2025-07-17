@@ -9,6 +9,7 @@ const debounce = require(__dirname + '/debounce.js');
 
 const buildQueue = new UniqueQueue();
 const dockerCommands = require(__dirname + '/DockerCommands.js');
+const dockerController = require(__dirname + '/DockerController.js');
 const Containers = require(__dirname + '/Containers.js');
 const Utils = require(__dirname + '/Utils.js');
 
@@ -50,7 +51,7 @@ module.exports = function (dockerPath) {
 
 function handleDirectoryChange(buildPath) {
   if (!fs.existsSync(buildPath)) {
-    Containers.remove(Utils.getImageNameFromPath(buildPath));
+    dockerController.stopContainer(Utils.getImageNameFromPath(buildPath));
 
     return;
   }
@@ -63,8 +64,6 @@ function handleDirectoryChange(buildPath) {
   if (!fs.existsSync(buildFile)) {
     return;
   }
-
-  Containers.add(Utils.getImageNameFromPath(buildPath));
 
   buildQueue.enqueue(buildPath);
 }
@@ -79,6 +78,7 @@ async function buildThread() {
     }
 
     // Do one build at a time
+    console.log(`Processing build for: ${buildPath}`);
     await dockerCommands.buildImage(buildPath).then(success => {
       console.log(`Build completed for ${buildPath}:`, success);
       if (success) {
@@ -89,5 +89,14 @@ async function buildThread() {
 }
 
 function handleNewImageBuild(buildPath) {
-  Containers.restart(Utils.getImageNameFromPath(buildPath));
+  dockerCommands
+    .stopContainer(Utils.getImageNameFromPath(buildPath))
+    .then(() => {
+      console.log(
+        `Container stopped for image: ${Utils.getImageNameFromPath(buildPath)}`
+      );
+      return dockerCommands.startContainer(
+        Utils.getImageNameFromPath(buildPath)
+      );
+    });
 }
