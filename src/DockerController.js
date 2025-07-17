@@ -14,8 +14,7 @@ if (process.platform === 'win32') {
 }
 
 const docker = new Docker(dockerOptions);
-
-// Example usage
+/*/ Example usage
 docker
   .listContainers({ all: true })
   .then(containers => {
@@ -24,3 +23,4 @@ docker
   .catch(err => {
     console.error('Docker error:', err);
   });
+*/
