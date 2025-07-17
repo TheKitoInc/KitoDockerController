@@ -1,4 +1,4 @@
-const childProcess  = require('child_process');
+const childProcess = require('child_process');
 
 function testCommand(command) {
   if (!command || typeof command !== 'string') {
@@ -9,14 +9,14 @@ function testCommand(command) {
 function combineOptions(options) {
   return {
     stdio: 'inherit', // Default to inherit for stdout/stderr
-    shell: true,      // Allow full shell syntax like redirection, etc.
-    ...options        // Spread any additional options
+    shell: true, // Allow full shell syntax like redirection, etc.
+    ...options, // Spread any additional options
   };
 }
 
 function execSync(command, options = {}) {
   testCommand(command);
-  
+
   try {
     console.log(`Executing command: ${command}`);
     childProcess.execSync(command, combineOptions(options));
@@ -35,7 +35,7 @@ function execAsync(command, options = {}) {
   return new Promise((resolve, reject) => {
     const child = childProcess.spawn(cmd, args, combineOptions(options));
 
-    child.on('close', (code) => {
+    child.on('close', code => {
       if (code === 0) {
         resolve();
       } else {
@@ -43,7 +43,7 @@ function execAsync(command, options = {}) {
       }
     });
 
-    child.on('error', (error) => {
+    child.on('error', error => {
       console.error(`Failed to start command: ${command}`, error);
       reject(error);
     });
