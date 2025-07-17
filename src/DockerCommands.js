@@ -7,5 +7,21 @@ module.exports.buildImage = async function (buildPath) {
     throw new Error(`Could not determine image name from path: ${buildPath}`);
   }
   console.log(`Building Docker image: ${imageName} from path: ${buildPath}`);
-  return System.execAsync(`docker build -t ${imageName} ${buildPath}`);
+  return System.execAsync(`docker build -t "${imageName}" "${buildPath}"`);
+};
+
+module.exports.startContainer = async function (imageName) {
+  if (!imageName) {
+    throw new Error('Image name is required to start a container');
+  }
+  console.log(`Starting Docker container from image: ${imageName}`);
+  return System.execAsync(`docker run -d --name "${imageName}" "${imageName}"`);
+};
+
+module.exports.stopContainer = async function (containerName) {
+  if (!containerName) {
+    throw new Error('Container name is required to stop a container');
+  }
+  console.log(`Stopping Docker container: ${containerName}`);
+  return System.execAsync(`docker stop "${containerName}"`);
 };
