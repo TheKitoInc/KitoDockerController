@@ -16,8 +16,10 @@ function combineOptions(options) {
 
 function execSync(command, options = {}) {
   testCommand(command);
+  
   try {
-    return childProcess.execSync(command, combineOptions(options));
+    console.log(`Executing command: ${command}`);
+    childProcess.execSync(command, combineOptions(options));
   } catch (error) {
     console.error(`Error executing command: ${command}`, error);
     throw error;
@@ -41,9 +43,9 @@ function execAsync(command, options = {}) {
       }
     });
 
-    child.on('error', (err) => {
-      console.error(`Failed to start command: ${command}`, err);
-      reject(err);
+    child.on('error', (error) => {
+      console.error(`Failed to start command: ${command}`, error);
+      reject(error);
     });
   });
 }
