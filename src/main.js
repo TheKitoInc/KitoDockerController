@@ -115,5 +115,12 @@ async function handleNewImageBuild(buildPath) {
   } catch (error) {
     console.error(`Error stopping container for image ${imageName}:`, error);
   }
+
+  try {
+    await dockerCommands.removeContainer(imageName);
+    console.log(`Removed existing container for image: ${imageName}`);
+  } catch (error) {
+    console.error(`Error removing container for image ${imageName}:`, error);
+  }
   return dockerCommands.startContainer(imageName);
 }
