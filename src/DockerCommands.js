@@ -15,7 +15,7 @@ module.exports.startContainer = async function (imageName) {
     throw new Error('Image name is required to start a container');
   }
   console.log(`Starting Docker container from image: ${imageName}`);
-  return System.execAsync(`docker run -d --name "${imageName}" "${imageName}"`);
+  return System.execAsync(`docker run --rm -d --name "${imageName}" "${imageName}"`);
 };
 
 module.exports.stopContainer = async function (containerName) {
