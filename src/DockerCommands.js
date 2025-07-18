@@ -25,3 +25,12 @@ module.exports.stopContainer = async function (containerName) {
   console.log(`Stopping Docker container: ${containerName}`);
   return System.execAsync(`docker stop "${containerName}"`);
 };
+
+
+module.exports.removeContainer = async function (containerName) {
+  if (!containerName) {
+    throw new Error('Container name is required to remove a container');
+  }
+  console.log(`Removing Docker container: ${containerName}`);
+  return System.execAsync(`docker rm "${containerName}"`);  
+};
