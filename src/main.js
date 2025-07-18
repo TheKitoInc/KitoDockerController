@@ -108,6 +108,12 @@ async function handleNewImageBuild(buildPath) {
     console.error(`Could not determine image name from path: ${buildPath}`);
     return;
   }
-  await dockerCommands.stopContainer(imageName);
+
+  try {
+    await dockerCommands.stopContainer(imageName);
+    console.log(`Stopped existing container for image: ${imageName}`);
+  } catch (error) {
+    console.error(`Error stopping container for image ${imageName}:`, error);
+  }
   return dockerCommands.startContainer(imageName);
 }
